@@ -1,7 +1,5 @@
 
-
-
-<img src="TAUSystemsLogo.png" width="500" height="250">
+<img src="TAUSystemsLogo.png" width="400" height="200">
 
 # [**www.tausystems.com**](https://www.tausystems.com)
 
