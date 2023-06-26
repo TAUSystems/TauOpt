@@ -1,7 +1,7 @@
 import json
 
 #full path of the project folder 
-project_folder='/Users/rahul/Dropbox/TauOpt/examples/test_project'
+project_folder='FULL_PATH/TauOpt/examples/test_project'
 #-----------------------------------------------------------------------------------------------
 # code description
 #-----------------------------------------------------------------------------------------------
