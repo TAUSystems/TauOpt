@@ -1,5 +1,6 @@
 import sys
 import os
+import importlib.util
 from src.config import * 
 from src.io import *
 from src.init import *
@@ -9,23 +10,29 @@ from src.run_sim import *
 from src.opt_algos import *
 
 
+
 if __name__ == '__main__':
     
     #startup message
     start.startup_message()
+
+
     
     #load the user setup/configuration file as module
     try:
         
-        user_config_fname = parse_input.user_config_file_name(sys.argv[1])
-        user_config = __import__( user_config_fname )
+        user_config_fname, user_config_path = parse_input.user_config_file_name(sys.argv[1])
+        user_config_spec = importlib.util.spec_from_file_location( user_config_fname, user_config_path)
+        user_config = importlib.util.module_from_spec( user_config_spec )
+        user_config_spec.loader.exec_module( user_config )
         load_user_config.load_config(config, user_config, user_config_fname)
 
     except:
 
-        print(f"Could not load the user-defined configuration file.")
+        print(f"\n Could not load the user-defined configuration file.")
         sys.exit(f"The name of configuration file must be passed as an argument to TauOpt.py")
 
+    
     #check the current configuration for any error
     check_config.check_all(config)
 
