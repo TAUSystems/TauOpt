@@ -41,5 +41,6 @@ To proceed, open 'test_config.py' and modify the 'project_folder' variable by pr
         
 'python TauOpt.py INSTALL_DIR/TauOpt/examples/test_project/test_config.py' 
 
+Plots illustrating the optimization process are saved in the 'opt_plots/' directory. For example:    
 
-<img src="img/19.png" width="400" height="200">
+<img src="img/19.png" width="400" height="400">
