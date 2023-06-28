@@ -106,18 +106,11 @@ def load_config(config,user_config,user_config_fname):
         config.max_num_jobs = user_config.max_num_jobs
 
 
-    """ Dictionaries with set of parameters  """
 
-    if hasattr(user_config,"finished_sucessfully_if_exists"):
-        config.finished_sucessfully_if_exists = user_config.finished_sucessfully_if_exists
+    """ Function pointers / Dictionaries """
 
-
-    """ Set function pointers """
-
-    if hasattr(user_config,"finished_sucessfully"):
-         if callable(user_config.finished_sucessfully):
-             config.finished_sucessfully = user_config.finished_sucessfully
+    if hasattr(user_config,"finished_successfully"):
+         config.finished_successfully = user_config.finished_successfully
     
     if hasattr(user_config,"objective_function"):
-         if callable(user_config.objective_function):
-             config.objective_function = user_config.objective_function
+         config.objective_function = user_config.objective_function

@@ -5,6 +5,7 @@ import numpy as np
 from ..config import *
 from ..run_sim import *
 from ..util import gbl_vars
+from ..io import load_data
 import os
 import time
 
@@ -90,19 +91,26 @@ def val_obj_func(sim_num):
     val = np.nan  
     f = config.project_folder+'/'+'run'+str(sim_num)+'/tau_opt/opt_fval.txt'
     
+    #read value from previous evalaution, saved in a file
     if os.path.isfile(f):
-        with open(f,'r') as file:
-            content = file.read()
+        val = load_data.read_num_from_file(f)
+
     
-        val = float(content)
     else:
         if sim_status.sim_finished(sim_num): 
             # wait, just in case the file is still being written from previous run
             time.sleep(10) 
             
-            #call the user-defined objective func. from the run directory
             os.chdir(config.project_folder+'/'+'run'+str(sim_num))
-            val = config.objective_function()
+            
+            #call the user-defined objective func. from the run directory
+            if callable(config.objective_function):
+                val = config.objective_function()
+            
+            #read the value directly from the output file written by simulation code
+            elif isinstance(config.objective_function, str):
+                val = load_data.read_num_from_file(config.project_folder+'/'+'run'+str(sim_num)+'/'+config.objective_function)
+
             os.chdir(config.project_folder)
 
             #write the value in a file
@@ -112,7 +120,7 @@ def val_obj_func(sim_num):
         
         else:
             
-            print(f"Can't evaluate the objective function ! The output file for simulation number {sim_num} does not exist !!")
+            print(f"Can't evaluate the objective function ! Simulation Number {sim_num} has not finished yet !!")
             sim_status.check_sim_status(sim_num)
              
 

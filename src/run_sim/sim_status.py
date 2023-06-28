@@ -54,7 +54,7 @@ def sim_finished(sim_num):
     """
     Determine whether the simulation number "sim_num" finished sucessfully or not.
     
-    The criteria of sucess is configured by users either by defining "finished_sucessfully" function in the 
+    The criteria of sucess is configured by users either by defining "finished_successfully" function in the 
     configuration file or setting appropriate config. varaibles/dict that are interpreted in the following
 
     Returns:
@@ -64,11 +64,21 @@ def sim_finished(sim_num):
 
     res = False #default
     
-    if config.finished_sucessfully_if_exists:
-        if os.path.isfile( config.project_folder+'/'+'run'+str(sim_num) + '/'+ config.finished_sucessfully_if_exists['FilePath'] + '/' +config.finished_sucessfully_if_exists['FileName']):
+    if callable(config.finished_successfully):
+        
+        res = False
+        if config.finished_successfully(sim_num):
+            res = True
+
+    elif isinstance( config.finished_successfully, dict ):
+             
+        file_path = config.finished_successfully['Folder']
+        file_path = file_path.strip(" /") #strip spaces and /
+        if file_path !='':
+            file_path = '/'+file_path+'/'
+
+        if os.path.isfile( config.project_folder+'/'+'run'+str(sim_num) + '/' + file_path + config.finished_successfully['FileName'] ):
             res = True
     
-    elif config.finished_sucessfully(sim_num):
-        res = True
 
     return res

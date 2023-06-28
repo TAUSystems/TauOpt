@@ -12,4 +12,21 @@ def load_param(sim_num,run_info):
         param = json.load(f)
     
     for v in config.var_names:
-        run_info['run'+str(sim_num)][v] = param[v]     
+        run_info['run'+str(sim_num)][v] = param[v]
+    
+
+
+def read_num_from_file(filename):
+    
+    with open(filename,'r') as file:
+        content = file.read().strip()
+        print(content)
+        try:
+            number = int( content )
+            return number
+        except ValueError:
+            try:
+                number = float ( content )
+                return number
+            except ValueError:
+                print(f"Could not read output from {filename}")

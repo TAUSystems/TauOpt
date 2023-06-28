@@ -65,7 +65,7 @@ def copy_files(sim_num):
         if not os.path.isfile(config.project_folder+'/'+config.code_name+'/'+config.exec_name):
             
             #copy the entire source code 
-            print(f"copying the source code to {dest_folder}...\n")
+            print(f"Copying the source code to {dest_folder}\n")
             shutil.copytree(config.project_folder+'/'+config.code_name,dest_folder,dirs_exist_ok=True)
         
         else:

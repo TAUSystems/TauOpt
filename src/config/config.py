@@ -3,8 +3,8 @@ Configuration file for TauOpt
 
 The following configuration variables determine overall behaviour of TauOpt
 
-The values of these varaibles in this file determine the default behaviour of TauOpt
-These values can be overriden by passing a user-created configuration file to TauOpt.py 
+The values of these variables in this file determine the default behaviour of TauOpt
+These values can be overridden by passing a user-created configuration file to TauOpt.py 
 Example : " TauOpt.py --user_config.py " 
 
 The user-created configuration file is also a python file which contains distinct values of the varaibles 
@@ -139,34 +139,43 @@ max_num_jobs = 10
 Dictionaries :: set of config. parameters that user can pass to configure some specific functions used internally
 
 """
-#determine if the simulation finished sucessfully based on whether a file/folder exists or not
-#Example : 
-# finished_sucessfully_if_exists = { 'FilePath'  : 'data' # relative path (from project_folder/run$sim_num/) of the file that is looked for
-#                                    'FileName'  :  name of the file
-# }
 
-finished_sucessfully_if_exists = {}
 
 
 
 """
 
-Function pointers 
+Function/Dictionaries for interacting with the simulation code
 
 Note: functions defined in the config. files are called from the run folder (project_folder/run$sim_num)
 
 """
 
-def null_function(*args, **kwargs):
-    """ dummy function """
-    return 0
 
-#determine if the simulation finished sucessfully
-finished_sucessfully = null_function
+# Determine if the simulation finished sucessfully
+# callable function, or 
+# based on whether a file/folder exists or not
+# Example : 
+# finished_successfully = { 'Folder'    : 'data' # relative path (from project_folder/run$sim_num/) of the file that is looked for
+#                           'FileName'  :  name of the file
+#                        }
+
+finished_successfully = None
 
 #objective function whose output is optimized 
-objective_function = null_function
+objective_function = None
 
-#compilation steps 
-compile_source_code = null_function 
+#function detailing compilation steps 
+compile_source_code = None 
 
+"""
+Configuration for compiling source codes
+"""
+
+# Default compilers to compile simple source codes
+# Key: file extension, Value: compiler with flags/options
+# To use different compilers/flags, define the 'standard_compilation' dict. in your configulation file to override the default here 
+standard_compilation =   { '.c'   : 'gcc', 
+                           '.cpp' : 'g++',
+                           '.f90' : 'gfortran'
+                         }

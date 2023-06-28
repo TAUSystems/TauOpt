@@ -33,6 +33,9 @@ def init(config, vars, sim_num):
         sim_num (int) : current simulation number 
     
     """
+
+    #display important details about the current configuration state 
+    show_fyi()
     
     #initialize the entire "run_info" dictionary
     for n in range(1,config.max_num_runs+1):
@@ -71,6 +74,16 @@ def init(config, vars, sim_num):
     #initialize the optimization algorithm 
     if config.scan_type == 'opt':
         opt_algos.init(config, vars, sim_num)           
+
+def show_fyi():
+    """ 
+    Display some messages that inform users regarding the default behavior and how TauOpt has been configured
+    """
+    if os.path.isfile(config.project_folder+'/'+config.code_name+'/'+config.exec_name):
+        print(f"Executable already exists in the code folder, so compilation will not be attempted.") 
+        print(f"Only the executable, input files, and auxilary files (if any) will be copied between runs.")
+
+
 
 
 
