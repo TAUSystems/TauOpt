@@ -23,14 +23,13 @@ TauOpt is a Python software designed to execute target codes once correctly conf
 
 Before TauOpt executes the target code, it modifies the source code (e.g., input files) between runs as follows: 
 
-a) Read the files individually, as specified in the configuration file.
-b) Find matching strings (variable names a prefix), and replaced them with numerical values.
+1. Read the files individually, as specified in the configuration file.
+2. Find matching strings (variable names a prefix), and replaced them with numerical values.
 
 It then compiles the target code and runs the executable based on the configured settings.
 
 ## Writing a Configuration File
-The configuration file is a Python script that contains variables, dictionaries, and functions. Together, they shape the behavior of TauOpt and define how it interacts 
-with the target code. For an example, refer to '/examples/test_project/test_config.py'
+The configuration file is a Python script that contains variables, dictionaries, and functions. Together, they shape the behavior of TauOpt and define how it interacts with the target code. For an example, refer to '/examples/test_project/test_config.py'
 
 A complete list of configuration properties can be found in 'src/config/config.py'. Variables, dictionaries, and functions defined in user-provided configuration files override objects with similar names in 'src/config/config.py'. 
 
