@@ -6,7 +6,10 @@
 # TauOpt
 
 A general-purpose automation and optimization code for physics/engineering simulations.
-	
+
+## License
+See LICENSE.md for license rights and limitations (Apache2.0).
+ 
 ## Getting Started
 
 TauOpt is a Python software designed to execute target codes once correctly configured. TauOpt itself is not a Python package but requires additional Python packages. To use TauOpt, follow these steps: 
