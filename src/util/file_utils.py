@@ -69,12 +69,20 @@ def copy_files(sim_num):
             shutil.copytree(config.project_folder+'/'+config.code_name,dest_folder,dirs_exist_ok=True)
         
         else:
-            shutil.copy(config.project_folder+'/'+config.code_name+'/'+config.exec_name,dest_folder)
+            #copy the executable if it does not contain '/'
+            #if the exec_name contains '/', it would run from its current location, so not copying
+            if '/' not in config.exec_name:
+                shutil.copy(config.project_folder+'/'+config.code_name+'/'+config.exec_name,dest_folder)
+            
             #copy the input files
-            for n in range(len(config.input_file)):
-                shutil.copy(config.project_folder+'/'+config.code_name+'/'+config.input_file[n],dest_folder)
-                
-             
+            for n in range(len(config.input_files)):
+                shutil.copy(config.project_folder+'/'+config.code_name+'/'+config.input_files[n],dest_folder)
+
+
+        #copy all auxiliary files
+        for n in range(len(config.aux_files)):
+            shutil.copy(config.project_folder+'/'+config.code_name+'/'+config.aux_files[n],dest_folder)
+
 
 
         #copy the submission script, if needed

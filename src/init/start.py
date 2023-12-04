@@ -8,6 +8,7 @@ from ..io import load_data
 from ..util import *
 from ..io import *
 from ..opt_algos import opt_algo
+from .check_init import *
 
 def startup_message():
     """ message displayed at the start """
@@ -18,6 +19,13 @@ def startup_message():
 
 def init_complete_message():
      print(f"Initializations complete ! \n")
+
+
+def check_all():
+    """
+    checks before intialization
+    """
+    check_project_folder_path()
 
 
 def init(config, vars, sim_num):
@@ -33,6 +41,9 @@ def init(config, vars, sim_num):
         sim_num (int) : current simulation number 
     
     """
+    
+    #initialize global varaibles
+    init_gbl_vars(config,vars)
 
     #display important details about the current configuration state 
     show_fyi()
@@ -75,6 +86,30 @@ def init(config, vars, sim_num):
     if config.scan_type == 'opt':
         opt_algos.init(config, vars, sim_num)           
 
+
+
+def init_gbl_vars(config, vars):
+    """
+    Initialise all global variables
+    """
+    
+    #Range/tolerange of the varaibles in the format required by scipy minimize
+        
+    vars.bounds = [(None, None)] * len(config.var_names)
+    vars.tol = [ 0 ] * len(config.var_names)
+
+    if config.scan_type == 'opt':
+        m = 0
+        for v in config.var_names:
+            
+            vars.bounds[m] = ( config.var_range[v][0], config.var_range[v][1] )
+            vars.tol [m] =  config.var_tolerance[v]
+
+            m=m+1
+    
+
+
+
 def show_fyi():
     """ 
     Display some messages that inform users regarding the default behavior and how TauOpt has been configured
@@ -82,9 +117,6 @@ def show_fyi():
     if os.path.isfile(config.project_folder+'/'+config.code_name+'/'+config.exec_name):
         print(f"Executable already exists in the code folder, so compilation will not be attempted.") 
         print(f"Only the executable, input files, and auxilary files (if any) will be copied between runs.")
-
-
-
 
 
 def show_TAU_logo():

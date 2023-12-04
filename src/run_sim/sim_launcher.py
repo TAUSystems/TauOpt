@@ -17,6 +17,30 @@ def compile_and_run(sim_num):
     #run the executable
     sim_run(sim_num)
 
+def restart(sim_num): 
+    """
+    Restart the simulation
+    """
+    run_folder = config.project_folder+'/'+'run'+str(sim_num)
+    os.chdir(run_folder)
+
+    try: 
+        
+        # call user-defined function to complete steps required for restart
+        # if the function is not defined, it is assumned that simply running the executable 
+        # will restart the simulation
+        if callable (config.restart): 
+            config.restart()
+        
+        sim_run(sim_num)
+    
+    except: 
+        print(f"Error in restarting Simulation Number {sim_num}")
+    
+
+
+    os.chdir(config.project_folder)
+
 
 
 def sim_compile(sim_num):
@@ -106,9 +130,12 @@ def sim_run(sim_num):
         
         if config.username == '':
 
-            print(f"Running Sumulation Number  {sim_num}")            
-            if len(config.local_exec_cmd)== 0 :
-                subprocess.check_output([ './'+config.exec_name ])
+            print(f"Running Simulation Number  {sim_num}")            
+            if len(config.local_exec_cmd)== 0:
+                if '/' in config.exec_name:
+                    subprocess.check_output([ config.exec_name ])
+                else:
+                    subprocess.check_output([ './'+config.exec_name ])
             else:
                 subprocess.check_output(config.local_exec_cmd) 
             job_id=str(sim_num)

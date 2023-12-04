@@ -3,7 +3,40 @@
 from ..config import *
 import os
 import pandas as pd
+import math
+import random
 import h5py
+
+def auto_scan_param(sim_num, run_info):
+    """
+    Input parameters are automatically generated according to 
+    the scan type ( uniform grid sampling or random point sampling)
+    """
+
+    #grid sampling
+    if config.scan_type == 'grid':
+        
+        rem = sim_num-1
+        ind ={}
+
+        for v in config.var_names:
+            ind[v] = rem % config.var_grid_npoints[v]
+            rem = int (rem / config.var_grid_npoints[v])
+
+        for v in config.var_names:
+            if config.var_grid_spacing[v] == 'log':
+                dv = (math.log10(config.var_range[v][1]) - math.log10(config.var_range[v][0])) / (config.var_grid_npoints[v]-1)
+                run_info['run'+str(sim_num)][v] = config.var_range[v][0] * 10**((ind[v]-1)*dv)
+            else:
+                dv = (config.var_range[v][1] - config.var_range[v][0]) / (config.var_grid_npoints[v]-1)
+                run_info['run'+str(sim_num)][v] = config.var_range[v][0] + ind[v]*dv
+    
+    #random sampling
+    if config.scan_type == 'random':
+        for v in config.var_names:
+            run_info['run'+str(sim_num)][v] = config.var_range[v][0] + (config.var_range[v][1] - config.var_range[v][0]) * random.random()
+
+
 
 def func_param(sim_num, run_info):
     """

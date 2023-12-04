@@ -41,6 +41,7 @@ def repeated_param(sim_num):
                 break
 
         if repeat == True:
+            print(f"parameters for run {sim_num} is same as in run {n}")
             res = n
             break
     
@@ -85,7 +86,7 @@ def all_complete(sim_num,run_info):
         if all_sim_finished(sim_num):
             res = True
 
-    #check if the optimizer has converged    
+    #check if the optimization search has converged    
     if config.scan_type=='opt':
         if opt.converged(sim_num, run_info):
             res = True
@@ -114,7 +115,7 @@ def all_status_check(sim_num):
 
 def within_tolerance(params1, params2):
     """
-    Check if params 1 and two are within the tolerance
+    Check if params 1 and 2 are within the tolerance
     """
     res = True
 
@@ -126,5 +127,3 @@ def within_tolerance(params1, params2):
         res = False
     
     return res
-
-

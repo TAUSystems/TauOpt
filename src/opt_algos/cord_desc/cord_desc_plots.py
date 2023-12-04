@@ -1,13 +1,13 @@
 """ Make plots showing progress """
 from ...config import *
-from . import cord_desc_utils as utils
+from . import cord_desc_scans as utils
 from ...util import gbl_vars
 import numpy as np
 import os
 import matplotlib.pyplot as plt
 
 
-def plot_fval(run_info,sim_num, cord0):
+def plot_fval(run_info,sim_num, scans, model):
     """
     Make plots for each simulation showing progress 
 
@@ -21,52 +21,68 @@ def plot_fval(run_info,sim_num, cord0):
     fig = plt.figure()
     fig.suptitle(f"Coordinate Descent Optimization")
     
-    ind = sim_num
-    cord = cord0
-    nscan = np.zeros(len(config.var_names),dtype=int)-1
+    nscan = np.zeros(len(config.var_names), dtype = int) 
     
-    #determine scan number for each cont. run
-    while ind>=1:
-        pos,val,ind = utils.gather_cord_cont_runs(run_info,ind,cord)
-        nscan[cord] = nscan[cord] + 1
+    #plot data points and model fit
+    for n in range(1,scans.nscan+1):
         
-        cord = cord - 1
-        if cord ==-1:
-            cord = len(config.var_names)-1
-    
-    
-    ind = sim_num
-    cord = cord0
-    show_poly_fit = True
-    #plot data points
-    while ind>=1:
-        pos,val,ind = utils.gather_cord_cont_runs(run_info,ind,cord)
+        cord = scans.cord_scan[n].cord
+        
+        #update pos, val for the current scan
+        if n == scans.nscan:
+            scans.cord_scan[n].update_pos_val(run_info)
+
+        pos = scans.cord_scan[n].pos
+        val = scans.cord_scan[n].val
         
     
-        ax = plt.subplot(2,len(config.var_names),cord+1)
+        ax = plt.subplot(2,len(config.var_names), cord+1)
         
         # show individual simulation result as data points
-        ax.plot(pos,val,'o',markersize=8, color=gbl_vars.colors[nscan[cord]],zorder=nscan[cord])
+        ax.plot(pos,val,'o',markersize=8, color=gbl_vars.colors[nscan[cord]], zorder=nscan[cord])
         plt.xlabel(config.var_names[cord])
         plt.xlim([config.var_range[config.var_names[cord]][0], config.var_range[config.var_names[cord]][1] ])
+
         
-        #show the ploynomial fit for the very last scan
-        if show_poly_fit:
+        #x-points where y is evaluated for plotting using the model
+        x = np.linspace( config.var_range[config.var_names[cord]][0], config.var_range[config.var_names[cord]][1], 100 )
+        
+        #show the ploynomial fit for the current scan
+        if config.opt_algo_config['model'] == 'poly' and n == scans.nscan :
             
-            degree = min(4,len(pos)-1)
+            degree = min(config.model_poly_config['max_deg'],len(pos)-1)
             coeff = np.polyfit(pos, val, degree)                   
             poly = np.poly1d(coeff)
-            x = np.linspace( config.var_range[config.var_names[cord]][0], config.var_range[config.var_names[cord]][1], 100 )
             y = poly(x)
             ax.plot(x,y)
-            show_poly_fit = False
+        
+        #show the GP model fit for the current scan
+        if config.opt_algo_config['model'] == 'gp' and n == scans.nscan:
+
+            if len(pos) > config.opt_algo_config['num_warm_points']:
+                
+                x_gp = x.reshape(-1,1)
+                x_gp = model.X_scaler.transform(x_gp)
+                
+                # get mean and std from the GP model
+                y, std = model.model.predict(x_gp, return_std = True) 
+                y = y.reshape(-1,1)
+                y = model.y_scaler.inverse_transform(y)
+                y = y.ravel()
+                std = std.ravel() * model.y_scaler.scale_
+
+                ax.plot(x,y)
+                plt.fill_between( x , y - 1.96 * std, y + 1.96 * std, alpha=0.2)
+
+        #highlight the point for the current run sim_num
+        if n == scans.nscan:
+            ax.plot(pos[-1], val[-1], 'o' ,markersize=8 ,color='k', zorder=nscan[cord])
+
+
+        
+        nscan[cord] = nscan[cord] +1
+
     
-        
-        nscan[cord] = nscan[cord] - 1
-        
-        cord = cord - 1
-        if cord ==-1:
-            cord = len(config.var_names)-1
     
     #histogram showing func values for all simulations
     pos = np.zeros(sim_num)

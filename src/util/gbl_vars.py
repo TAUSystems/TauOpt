@@ -7,7 +7,18 @@ sleep_time = 0
 run_info = {}
 
 #colors for curves in plots
-colors = ['r','g','b','c','m', 'y', 'k','r','g','b','c','m', 'y', 'k']
+colors = ['r','g','b','c','m','y','r','g','b','c','m', 'y']
 
 #stores reference of the algorithm instance
 algo=''
+
+
+"""
+Copied/reorganized varaibles from config. or user-provided config. 
+"""
+#bounds of all variables
+bounds = [(None , None)]
+
+#tolerance for every varaibles
+tol = []
+

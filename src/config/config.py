@@ -25,7 +25,12 @@ code_name =''
 exec_name = ''
 
 #list of all files that contain chaging "input variables" defined in var_names below
-input_file = []
+input_files = []
+
+# list of all auxiliary files. These files are simply copied from the code folder 
+# to the run folder (no modification) for each run
+aux_files = []  
+
 
 #list containing names of the all varaibles are the changed from one run to another.
 #the files listed in "input_files" contain elements of var_names (with prefix "var_names_prefix") which are automatically replaced by
@@ -38,13 +43,14 @@ var_names_prefix = '$'
 
 # scan_type defines how the input varaibles are changed
 # 
-# 'func' : get new set of varaibles from a user defined function
-# 'opt'  : automatically adjust the values of input varaibles with optimization
-# 'file' : read the values sequentially from a file
-#
+# 'func'   : get new set of varaibles from a user defined function
+# 'opt'    : automatically adjust the values of input varaibles with optimization (default)
+# 'file'   : read the values sequentially from a file
+# 'grid'   : input varaibles uniformly spaced () in the specified range (var_range)
+# 'random' : input varaibles are randomly selected in the specified range (var_range)  
 # each mode listed above requires additional configuration varaibles defined below
 
-scan_type = ''
+scan_type = 'opt'
 
 
 
@@ -67,11 +73,29 @@ var_val0 = []
 var_range = {}
 
 #tolerance in the determination of the optimal values 
-var_tolerance = {'x1': 0.1, 'x2': 0.1, 'x3':0.1 }
+#Example : var_tolerance = {'x1': 0.1, 'x2': 0.1 }
+var_tolerance = {}
 
-#type of optimization algorithm
-opt_algo_type = 'cord_desc'
+#num. of grid points for each varaible if scan_type == 'grid'; default is 2
+var_grid_npoints = {}
 
+#grid spacing ('log' or 'linear') for the input varaible grid
+#set to 'linear' by default if not specified and scan_type == 'grid' or random
+var_grid_spacing = {}
+
+#configuration for the optimization algorithms
+#default choice is the Coordinate Descent algorithm with 4th degree polynomial surrogate model
+opt_algo_config = { 'type'            : 'cord_desc', 
+                    'model'           : 'gp', 
+                    'num_warm_points' : 3  
+                  }
+
+#configuration for the surrogate model
+model_poly_config = { 'max_deg' : 4 
+                    }
+
+model_gp_config   = { 'kernel' : 'Matern'
+                    }
 
 
 """
@@ -167,6 +191,9 @@ objective_function = None
 
 #function detailing compilation steps 
 compile_source_code = None 
+
+#function detailing the steps for restart
+restart = None
 
 """
 Configuration for compiling source codes

@@ -17,6 +17,10 @@ def load_param(sim_num,run_info):
 
 
 def read_num_from_file(filename):
+    """
+    Read a number from a (text) file named 'filename'
+    
+    """
     
     with open(filename,'r') as file:
         content = file.read().strip()
@@ -29,4 +33,4 @@ def read_num_from_file(filename):
                 number = float ( content )
                 return number
             except ValueError:
-                print(f"Could not read output from {filename}")
+                print(f"Could not read the output from {filename}")

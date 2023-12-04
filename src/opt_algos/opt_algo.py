@@ -1,6 +1,7 @@
 """ Optimization algorithms """
 from ..run_sim import sim_status
-from .cord_desc import CordDesc
+from .cord_desc.cord_desc_algo import CordDesc
+from .bayesian.bayesian_algo import BayesianOptimization
 import numpy as np
 from ..config import *
 from ..run_sim import *
@@ -8,6 +9,10 @@ from ..util import gbl_vars
 from ..io import load_data
 import os
 import time
+
+#plotting is complete for all runs with "num" lower than this 
+plotting_completed = 0
+
 
 
 def init(config, vars, sim_num):
@@ -20,8 +25,12 @@ def init(config, vars, sim_num):
         sim_num (int)   : current simulation number
 
     """
-    if config.opt_algo_type == 'cord_desc':
+    if config.opt_algo_config['type'] == 'cord_desc':
         gbl_vars.algo = CordDesc(vars, sim_num)
+    
+    if config.opt_algo_config['type'] == 'bayesian':
+        gbl_vars.algo = BayesianOptimization(vars, sim_num)
+    
 
     update_run_info(sim_num,vars.run_info) 
 
@@ -29,8 +38,7 @@ def init(config, vars, sim_num):
 def get_param(sim_num, run_info):
     """ Get parameters for simulation number sum_num """
     
-    if config.opt_algo_type == 'cord_desc':
-        gbl_vars.algo.next_param(sim_num, run_info)
+    gbl_vars.algo.next_param(sim_num, run_info)
 
 
 def converged(sim_num, run_info):
@@ -62,10 +70,12 @@ def update_plots(sim_num,run_info):
     """
     Update all plots produced by the optimization algorithm
     """
-    for n in range(1,sim_num+1):
+    for n in range(1 , sim_num+1):
         if make_plot(run_info,n):
             gbl_vars.algo.update_plot(run_info, n)
-            run_info['run'+str(n)]['plotted'] = True    
+            run_info['run'+str(n)]['plotted'] = True 
+
+
 
 
 

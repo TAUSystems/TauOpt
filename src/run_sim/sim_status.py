@@ -21,8 +21,9 @@ def check_sim_status(sim_num):
             print(f"sim num {sim_num} was submitted but still waiting/running. ")
         else:
             if not sim_finished(sim_num):     
-                print(f"sim num {sim_num} was submitted but did not finish. Resubmitting.. ")
-                sim_launcher.compile_and_run(sim_num)
+                print(f"sim num {sim_num} was submitted but did not finish. Resubmitting/Restarting ... ")
+                sim_launcher.restart(sim_num)
+    
     
     
 def sim_submitted(sim_num):
@@ -79,6 +80,9 @@ def sim_finished(sim_num):
 
         if os.path.isfile( config.project_folder+'/'+'run'+str(sim_num) + '/' + file_path + config.finished_successfully['FileName'] ):
             res = True
+    
+    elif config.finished_successfully:
+        res = True
     
 
     return res
