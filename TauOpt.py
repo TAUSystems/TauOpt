@@ -4,7 +4,6 @@ import importlib.util
 from src.config import * 
 from src.io import *
 from src.init import *
-from src.io import *
 from src.util import *
 from src.run_sim import *
 from src.opt_algos import *
@@ -35,6 +34,7 @@ if __name__ == '__main__':
     
     #check the current configuration for any error
     check_config.check_all(config)
+    start.check_all()
 
     #initialize local variables 
     finished = False
@@ -75,6 +75,11 @@ if __name__ == '__main__':
             #from a user defined function
             if config.scan_type=='func':
                 read_params.func_param(sim_num,gbl_vars.run_info)
+            
+            #determined new parameters based on a scan-strategy
+            if config.scan_type == 'grid' or config.scan_type == 'random' :
+                read_params.auto_scan_param(sim_num,gbl_vars.run_info)
+             
 
 
             """ 
@@ -128,6 +133,9 @@ if __name__ == '__main__':
     os.chdir(config.project_folder)
 
     #the final message before exiting this script
+    if config.scan_type=='opt':
+        disp_message.disp_best_sim_params(sim_num-1, run_info)
+
     print(f"\n==========================================================================")
     print(f" TauOpt finished at : {fmt.get_time()}")
     print(f"==========================================================================")  
