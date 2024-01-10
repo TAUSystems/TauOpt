@@ -89,7 +89,7 @@ class CordDesc:
                             new_pos = new_pos[0]
 
 
-                    #if the new search point already exists or is too close to the previous point, add some random dispalcement
+                    #if the new search point already exists or is too close to the previous point, include a random dispalcement
                     new_pos = self._well_seprated_next_param(new_pos, pos, tol[0], bounds)
 
                     
@@ -97,7 +97,7 @@ class CordDesc:
                     new_params = run_info_util.get_param( run_info, sim_num-1 )
                     new_params[var] = new_pos
 
-                    print(new_params)
+                    #print(new_params)
 
                     #copy new parameters for the next simulation
                     run_info_util.insert_param(run_info, sim_num, new_params)
@@ -113,12 +113,13 @@ class CordDesc:
     def _well_seprated_next_param(self, pos0, pos, tol, bounds):
         """
         suggested position "new_pos" is passed though the closeness test, i.e., 
-        if "new_pos" is too close to an already explored point and some random dispalcement 
+        if "new_pos" is too close to an already explored point, some random dispalcement 
         is added to make sure that the points are well seperated. 
         """
         
         new_pos = pos0
-        
+        new_pos = self._map_within_bounds(new_pos, bounds)
+
         n=1 
         while np.min(np.abs(new_pos-pos)) < 0.01*tol:
             
@@ -165,11 +166,13 @@ class CordDesc:
         lb = bounds[0][0]
         rb = bounds[0][1]
 
-        if p > rb: 
-            p = lb + (p - rb)
-            
-        if p < lb:
-            p = rb - (lb - p)
+        while p>rb or p<lb:
+
+            if p > rb: 
+                p = p - (p - rb)
+                
+            if p < lb:
+                p = p + (lb - p)
         
         return p
 
@@ -181,27 +184,28 @@ class CordDesc:
         has converged along every axis within the specified tolerance
         """
         
-        opt_param = {}
+        opt_pos = {}
+        opt_val = {}
         cord_conv = {}
         nscan = np.zeros(len(config.var_names),dtype=int) 
 
         #initialize
         for v in config.var_names: 
-            opt_param[v] = {}
+            opt_pos[v] = {}
+            opt_val[v] = {}
             cord_conv[v] = False
         
         #read opt. values from mutiple search cycles
         for n in range(1,self.scans.nscan+1):
             
-            pos = self.scans.cord_scan[n].pos 
-            val = self.scans.cord_scan[n].val 
             cord = self.scans.cord_scan[n].cord
 
             complete = self.scans.cord_scan[n].complete()
             
             #record the opt. value of the parameter, if the search is complete
             if complete:
-                opt_param [config.var_names[cord]][nscan[cord]] = self.scans.cord_scan[n].pos_best
+                opt_pos [config.var_names[cord]][nscan[cord]] = self.scans.cord_scan[n].pos_best
+                opt_val [config.var_names[cord]][nscan[cord]] = self.scans.cord_scan[n].val_best
                 nscan[cord] = nscan[cord] + 1    
             
                 
@@ -209,7 +213,7 @@ class CordDesc:
         #determine if all individual cycles have converged
         for v in config.var_names:
 
-            n = len(opt_param[v])
+            n = len(opt_pos[v])
 
             if n<2:
 
@@ -218,13 +222,8 @@ class CordDesc:
                 if n==1 and len(config.var_names)==1:
                     cord_conv[v] = True
 
-            else:    
-
-                if abs(opt_param[v][0] - opt_param[v][1])<config.var_tolerance[v]:
-                    cord_conv[v] = True
-        
-
-
+            else: 
+                cord_conv[v] = self.cord_converged(list(opt_pos[v].values()), list(opt_val[v].values()) , config.var_tolerance[v])  
 
         #determine if all cycles have converged
         res = True
@@ -236,3 +235,25 @@ class CordDesc:
             print(f"Scans along all cordinates have converged. \n")    
         
         return res  
+    
+
+
+
+    def cord_converged(self, pos, val, tol):
+        """
+        Determine whether the search along a cord. has converged
+        best_val : best values for different scans
+        tol : tolerance for convergence
+        """
+
+        conv = False
+
+        sorted_pairs = sorted(zip(val, pos))
+        _, sorted_pos = zip(*sorted_pairs)
+        
+        if abs (sorted_pos[-1] - sorted_pos[-2]) < tol: 
+            conv = True
+        
+        return conv
+
+

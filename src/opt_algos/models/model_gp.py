@@ -1,6 +1,6 @@
 """ Gaussian Process :: surrogate model for Bayesian optimization """
 from sklearn.gaussian_process import GaussianProcessRegressor
-from sklearn.gaussian_process.kernels import Matern
+from sklearn.gaussian_process.kernels import Matern, RBF
 from sklearn.preprocessing import StandardScaler
 from scipy.optimize import differential_evolution
 from scipy.stats import norm
@@ -9,8 +9,11 @@ import numpy as np
 class ModelGP:
 
     def __init__(self) -> None:
-        self.kernel = Matern(nu = 1.5)
-        self.model = GaussianProcessRegressor(kernel=self.kernel, n_restarts_optimizer=10)
+
+        self.kernel_Mattern = Matern( nu = 1.5 )
+        self.kernel_RBF = RBF() 
+
+        self.model = GaussianProcessRegressor(kernel=self.kernel_Mattern, n_restarts_optimizer=10)
         
         self.best_x = None
         self.best_y = None
@@ -27,6 +30,16 @@ class ModelGP:
         #scale the data
         X_scaled, y_scaled = self._scale_data(X,y)
         bounds_scaled =  self._scale_bounds(bounds)
+
+        #adjust the lenght scale
+        num_points = self.min_length_scale(bounds,X_scaled.shape[0])
+        if num_points<10:
+            #to avoid overfitting
+            self.model.kernel.length_scale_bounds = ( num_points , 2.0 )
+        else:
+            self.model.kernel.length_scale_bounds = ( 1e-5 , 1e5 ) #default bounds
+
+
 
         #fit GP model to the data
         self.model.fit( X_scaled, y_scaled )
@@ -57,6 +70,18 @@ class ModelGP:
 
         return X_scaled, y_scaled 
     
+    def min_length_scale(self, bounds, num_points):
+        """
+        regulate the min. length scale (hyperparameter) used in kernels
+        """
+        lb = [ t[0] for t in bounds ][0]
+        rb = [ t[1] for t in bounds ][0] 
+        min_lscale = 1.0 / 10*num_points
+
+        return min_lscale
+
+
+    
     
     def _scale_bounds(self, bounds):
         """
@@ -69,7 +94,7 @@ class ModelGP:
         rb = np.atleast_2d(rb)
 
         lb_scaled = self.X_scaler.transform(lb)[0]
-        rb_scaled = self.y_scaler.transform(rb)[0]
+        rb_scaled = self.X_scaler.transform(rb)[0]
 
         bounds_scaled = [ (x,y) for x, y in zip(lb_scaled, rb_scaled)]
         
@@ -108,4 +133,4 @@ class ModelGP:
         """
         
         best_idx = np.argmax(y)
-        return X[best_idx], y[best_idx]
+        return X[best_idx], y[best_idx] 

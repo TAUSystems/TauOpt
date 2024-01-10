@@ -124,7 +124,7 @@ def val_obj_func(sim_num):
             os.chdir(config.project_folder)
 
             #write the value in a file
-            print(f"The value of objective function for simulation number {sim_num} is: {val}")
+            print(f"The value of objective function from Simulation Number {sim_num} is: {val}")
             with open(f,'w') as file:
                 file.write(str(val))
         

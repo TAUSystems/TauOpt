@@ -19,6 +19,8 @@ def valid_param(sim_num):
                 if gbl_vars.run_info['run'+str(sim_num)][v] < config.var_range[v][0] or gbl_vars.run_info['run'+str(sim_num)][v] > config.var_range[v][1]:
                     valid = False
     
+    #print(f" next param is : {gbl_vars.run_info['run'+str(sim_num)]}")
+    
     rep = repeated_param(sim_num)
     if rep>0:
         print(f"Err: parameters for sim. num. {sim_num} are the same as in sim. num. {rep}")

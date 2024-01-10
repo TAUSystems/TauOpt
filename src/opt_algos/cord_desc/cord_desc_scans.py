@@ -130,6 +130,7 @@ class CordScan:
             val_sorted = val_nonan[ind_sorted]
             pos_sorted = pos_nonan[ind_sorted]
             id_sorted  = id_nonan[ind_sorted]
+            print(pos_sorted)
  
             #best obeserved so far
             self.pos_best = pos_sorted[-1]
@@ -137,12 +138,9 @@ class CordScan:
             self.run_id_best = id_sorted[-1]
 
             if len(pos_sorted)>=2:
-
-                    if abs(pos_sorted[-1]-pos_sorted[-2])<config.var_tolerance[config.var_names[self.cord]]:
-                        complete = True
-                        #print(f"Search along {cord} converged ! Two consecutive search parameters are within the tolerance. ")
+                if abs(pos_sorted[-1]-pos_sorted[-2])<config.var_tolerance[config.var_names[self.cord]]:
+                    complete = True
+                    #print(f"Search along {cord} converged ! Two consecutive search parameters are within the tolerance. ")
                     
-
-            complete = False         
         
         return complete

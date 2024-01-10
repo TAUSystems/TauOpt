@@ -39,7 +39,11 @@ def plot_fval(run_info,sim_num, scans, model):
         ax = plt.subplot(2,len(config.var_names), cord+1)
         
         # show individual simulation result as data points
-        ax.plot(pos,val,'o',markersize=8, color=gbl_vars.colors[nscan[cord]], zorder=nscan[cord])
+        markersize_ = 8
+        if n < scans.nscan+1:
+            markersize_ = 4
+
+        ax.plot(pos,val,'o',markersize=markersize_, color=gbl_vars.colors[nscan[cord]], zorder=nscan[cord])
         plt.xlabel(config.var_names[cord])
         plt.xlim([config.var_range[config.var_names[cord]][0], config.var_range[config.var_names[cord]][1] ])
 
@@ -98,7 +102,7 @@ def plot_fval(run_info,sim_num, scans, model):
     bars = ax.bar(pos,val)
     bars[max_val_ind].set_color('red') 
     plt.xlabel("Simulation No.")
-    plt.title(f"Max. value obtained in Simulation Number  {max_val_ind+1}")
+    plt.title(f"Max. value found in Simulation Number  {max_val_ind+1}")
     
     filename=config.project_folder+'/opt_plots/'+str(sim_num)+'.png'
     fig.savefig(filename, bbox_inches='tight')
