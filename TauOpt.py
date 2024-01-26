@@ -1,6 +1,7 @@
 import sys
 import os
 import importlib.util
+import time
 from src.config import * 
 from src.io import *
 from src.init import *
@@ -125,8 +126,10 @@ if __name__ == '__main__':
             finished = True
         else:
             sleep_this_cycle= True
-            print(f"Time : {fmt.get_time()} . Going to sleep for {sleep_time} sec. \n")
+            print(f"Time : {fmt.get_time()} . Going to sleep for {config.sleep_time} sec. \n")
             print(f"==========================================================================\n\n")
+            time.sleep(config.sleep_time)
+
 
 
     #change dir to the project folder
