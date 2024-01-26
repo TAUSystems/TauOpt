@@ -183,6 +183,12 @@ def load_config(config,user_config,user_config_fname):
     if hasattr(user_config,"standard_compilation"):
         config.standard_compilation = user_config.standard_compilation
 
+    """
+    Additional configuration
+    """
+    if hasattr(user_config,"sleep_time"):
+        config.sleep_time = user_config.sleep_time
+
 
 
 def update_from_user_defined_dict( default_dict , user_dict):

@@ -206,3 +206,11 @@ standard_compilation =   { '.c'   : 'gcc',
                            '.cpp' : 'g++',
                            '.f90' : 'gfortran'
                          }
+
+
+"""
+Additional configurations for TauOpt 
+"""
+
+#TauOpt will sleep for sleep_time seconds before attemping to run next simulation
+sleep_time = 1 #default is 1 sec
