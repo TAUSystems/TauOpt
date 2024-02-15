@@ -19,7 +19,8 @@ TauOpt is a Python software designed to execute target codes once correctly conf
 3. Place the target code in a folder. 
 4. Modify the target code as explained below: label the locations where TauOpt will write input parameters. 
 5. Prepare a configuration file, as explained below, that defines the interaction properties between TauOpt and the target code. 
-6. Run TauOpt using the command 'python TauOpt.py FULL/PATH/OF/CONFIGURATION/FILE/user_config.py'. 
+6. Run TauOpt using the command 'python TauOpt.py FULL/PATH/OF/CONFIGURATION/FILE/user_config.py'.
+   (for Windows Os use the command 'python .\TauOpt.py C:\FULL\PATH\OF\CONFIGURATION\FILE\user_config.py')
 
 
 ## Preparing the Target Code
