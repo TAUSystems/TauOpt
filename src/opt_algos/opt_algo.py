@@ -99,7 +99,8 @@ def val_obj_func(sim_num):
 
     """
     val = np.nan  
-    f = config.project_folder+'/'+'run'+str(sim_num)+'/tau_opt/opt_fval.txt'
+    f = os.path.join(config.project_folder, 'run'+str(sim_num), 'tau_opt', 'opt_fval.txt')
+
     
     #read value from previous evalaution, saved in a file
     if os.path.isfile(f):
@@ -111,7 +112,8 @@ def val_obj_func(sim_num):
             # wait, just in case the file is still being written from previous run
             time.sleep(10) 
             
-            os.chdir(config.project_folder+'/'+'run'+str(sim_num))
+            os.chdir(os.path.join(config.project_folder, 'run'+str(sim_num)))
+
             
             #call the user-defined objective func. from the run directory
             if callable(config.objective_function):
@@ -119,7 +121,7 @@ def val_obj_func(sim_num):
             
             #read the value directly from the output file written by simulation code
             elif isinstance(config.objective_function, str):
-                val = load_data.read_num_from_file(config.project_folder+'/'+'run'+str(sim_num)+'/'+config.objective_function)
+                val = load_data.read_num_from_file(os.path.join(config.project_folder, 'run'+str(sim_num), config.objective_function))
 
             os.chdir(config.project_folder)
 

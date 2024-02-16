@@ -51,7 +51,7 @@ def read_param_from_file(sim_num,run_info):
     """
     Read input parameters from a file
     """
-    f=config.project_folder+'/'+config.var_filename
+    f = os.path.join(config.project_folder, config.var_filename)
     
     if not os.path.exists(f):
         sys.exit("The parameter file (values of 'var_names') could not be found")

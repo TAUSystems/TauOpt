@@ -7,7 +7,7 @@ from ..config import config
 
 def write_param(sim_num):
     
-    param_file = config.project_folder+'/'+'run'+str(sim_num)+"/tau_opt/param.json"
+    param_file = os.path.join(config.project_folder, 'run' + str(sim_num), 'tau_opt', 'param.json')
     
     if not os.path.isfile(param_file):
        

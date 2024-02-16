@@ -15,7 +15,7 @@ def user_config_file_name(str_in):
     if not os.path.isfile(path_parsed):
         print(f" The configuration file could not be found ! ")
         print(f" Please prodive a correct full path (with the script name) as an argument to TauOpt.py. ")
-        print(f" Example: python3 TauOpt.py /Users/Project/my_config.py \n ")
+        print(f" Example: python3 TauOpt.py /Users/Project/my_config.py use \\ for Win Os  \n ")
         print(f" The path you provided : {path_parsed} ")
     
     return fname_parsed, path_parsed

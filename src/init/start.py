@@ -64,18 +64,17 @@ def init(config, vars, sim_num):
     #set existing values of the function to be optimized
     if config.scan_type=='opt':
         for n in range(1,sim_num+1):
-            os.chdir(config.project_folder+'/run'+str(n))
+            os.chdir( os.path.join(config.project_folder,'run' + str(n)) )
             vars.run_info['run'+str(n)]['opt_fval'] = opt_algo.val_obj_func(n)
             os.chdir(config.project_folder)
-    
-            
+
     #load values of the input paramters from existing runs 
     if sim_num>0:
         print(f"Gathering info. from {sim_num} previous simulations. \n")
 
 
     for n in range(2,sim_num+1):
-        param_file = config.project_folder+'/run'+str(n)+'/tau_opt/param.json'
+        param_file = os.path.join(config.project_folder, 'run' + str(n), 'tau_opt', 'param.json')   
         if os.path.exists(param_file):
             load_data.load_param(n,run_info)
         else:
@@ -114,7 +113,7 @@ def show_fyi():
     """ 
     Display some messages that inform users regarding the default behavior and how TauOpt has been configured
     """
-    if os.path.isfile(config.project_folder+'/'+config.code_name+'/'+config.exec_name):
+    if os.path.isfile(os.path.join(config.project_folder, config.code_name, config.exec_name)):
         print(f"Executable already exists in the code folder, so compilation will not be attempted.") 
         print(f"Only the executable, input files, and auxilary files (if any) will be copied between runs.")
 
@@ -123,6 +122,7 @@ def show_TAU_logo():
     """
     Display the logo of " Tau Systems Inc."
     """
-    with open('src/init/TAU_logo.txt','r') as file:
+    with open(os.path.join('src', 'init', 'TAU_logo.txt'), 'r') as file:
+
         content = file.read()
         print(content)

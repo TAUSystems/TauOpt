@@ -28,7 +28,7 @@ def check_sim_status(sim_num):
     
 def sim_submitted(sim_num):
     res = False
-    if os.path.isfile(config.project_folder+'/'+'run'+str(sim_num)+'/tau_opt/submitted_jobs.txt'):
+    if os.path.isfile(os.path.join(config.project_folder, 'run'+str(sim_num), 'tau_opt', 'submitted_jobs.txt')):
         res = True
     return res
     
@@ -37,7 +37,7 @@ def sim_is_inq(sim_num):
     inq = False
     
     #check if the job is actually in the queue
-    jobID_file = config.project_folder+'/'+'run'+str(sim_num)+'/tau_opt/submitted_jobs.txt'
+    jobID_file = os.path.join(config.project_folder, 'run'+str(sim_num), 'tau_opt', 'submitted_jobs.txt')
     if os.path.isfile(jobID_file):    
         jobs = job_queue.read_job_queue() 
         with open(jobID_file,'r') as f:
@@ -74,11 +74,12 @@ def sim_finished(sim_num):
     elif isinstance( config.finished_successfully, dict ):
              
         file_path = config.finished_successfully['Folder']
-        file_path = file_path.strip(" /") #strip spaces and /
-        if file_path !='':
-            file_path = '/'+file_path+'/'
+        file_path = file_path.strip(" " + os.sep)
 
-        if os.path.isfile( config.project_folder+'/'+'run'+str(sim_num) + '/' + file_path + config.finished_successfully['FileName'] ):
+        if file_path !='':
+            file_path = os.path.join(os.sep, file_path, os.sep)
+
+        if os.path.isfile(os.path.join(config.project_folder, 'run'+str(sim_num), file_path, config.finished_successfully['FileName'])):
             res = True
     
     elif config.finished_successfully:

@@ -14,13 +14,17 @@ def write_new_param_into_setup_file(sim_num):
 
     for n in range(len(config.input_files)):
         try:
-            with open(dest_folder+'/'+config.input_files[n],"r") as f: 
+#            with open(dest_folder+'/'+config.input_files[n],"r") as f: 
+            with open(os.path.join(dest_folder, config.input_files[n]), 'r') as f:
+
                 fdata = f.read()
             
             for v in config.var_names: 
                 fdata = fdata.replace(config.var_names_prefix+str(v),str(gbl_vars.run_info['run'+str(sim_num)][v]))
 
-            with open(dest_folder+'/'+config.input_files[n],"w") as f:
+ #           with open(dest_folder+'/'+config.input_files[n],"w") as f:
+            with open(os.path.join(dest_folder, config.input_files[n]), 'w') as f:
+
                 f.write(fdata)
         except:
             pass

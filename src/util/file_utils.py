@@ -52,42 +52,36 @@ def copy_files(sim_num):
 
     dest_folder= os.path.join(config.project_folder, 'run'+str(sim_num)) 
     
-    if not os.path.isfile(dest_folder+'/'+config.exec_name):
+    if not os.path.isfile(os.path.join(dest_folder, config.exec_name)):
 
         #delete the existing dest_folder, if exists
         if os.path.isdir(dest_folder):
             shutil.rmtree(dest_folder)
 
         os.mkdir(dest_folder)
-        os.mkdir(dest_folder+'/tau_opt')
+        os.mkdir(os.path.join(dest_folder, 'tau_opt'))
 
         #copy the source code if the executable does not exist
-        if not os.path.isfile(config.project_folder+'/'+config.code_name+'/'+config.exec_name):
-            
+        if not os.path.isfile(os.path.join(config.project_folder, config.code_name, config.exec_name)):   
             #copy the entire source code 
             print(f"Copying the source code to {dest_folder}\n")
-            shutil.copytree(config.project_folder+'/'+config.code_name,dest_folder,dirs_exist_ok=True)
-        
+            shutil.copytree(os.path.join(config.project_folder, config.code_name), dest_folder, dirs_exist_ok=True)
         else:
-            #copy the executable if it does not contain '/'
-            #if the exec_name contains '/', it would run from its current location, so not copying
-            if '/' not in config.exec_name:
-                shutil.copy(config.project_folder+'/'+config.code_name+'/'+config.exec_name,dest_folder)
-            
+            #copy the executable if it does not contain '/'  
+            if os.sep not in config.exec_name:
+                shutil.copy(os.path.join(config.project_folder, config.code_name, config.exec_name), dest_folder)
             #copy the input files
             for n in range(len(config.input_files)):
-                shutil.copy(config.project_folder+'/'+config.code_name+'/'+config.input_files[n],dest_folder)
-
+                shutil.copy(os.path.join(config.project_folder, config.code_name, config.input_files[n]), dest_folder)
 
         #copy all auxiliary files
         for n in range(len(config.aux_files)):
-            shutil.copy(config.project_folder+'/'+config.code_name+'/'+config.aux_files[n],dest_folder)
-
-
+            shutil.copy(os.path.join(config.project_folder, config.code_name, config.aux_files[n]), dest_folder)
 
         #copy the submission script, if needed
         if config.username!='':
-            src_file = config.project_folder+'/'+config.code_name+'/'+config.submission_script
+            src_file = os.path.join(config.project_folder, config.code_name, config.submission_script)
+
             if os.path.isfile(src_file):
                 shutil.copy(src_file,dest_folder)
             else:

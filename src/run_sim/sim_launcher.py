@@ -21,7 +21,7 @@ def restart(sim_num):
     """
     Restart the simulation
     """
-    run_folder = config.project_folder+'/'+'run'+str(sim_num)
+    run_folder = os.path.join(config.project_folder, 'run'+str(sim_num))
     os.chdir(run_folder)
 
     try: 
@@ -49,7 +49,7 @@ def sim_compile(sim_num):
     
     """
 
-    run_folder = config.project_folder+'/'+'run'+str(sim_num)
+    run_folder = os.path.join(config.project_folder, 'run'+str(sim_num))
     os.chdir(run_folder)
      
     #compile the source code
@@ -123,11 +123,12 @@ def sim_run(sim_num):
     """
 
     submit = sim_submit(sim_num)
-    os.chdir(config.project_folder+'/'+'run'+str(sim_num))
+    os.chdir(os.path.join(config.project_folder, 'run'+str(sim_num)))
+
 
     job_id = 0                                          
     if submit:
-        
+#TODO This need to be changed the following to be compatible with Windows OS.        
         if config.username == '':
 
             print(f"Running Simulation Number  {sim_num}")            
@@ -146,7 +147,7 @@ def sim_run(sim_num):
         
         if job_id !=0:
             #save/write the job ID in a text file
-            with open('tau_opt/submitted_jobs.txt','a') as f:
+            with open(os.path.join('tau_opt', 'submitted_jobs.txt'), 'a') as f:
                 f.write(job_id+'\n')
         else:
             print(f"sim. num. {sim_num} could not be executed or submitted to the queue.")

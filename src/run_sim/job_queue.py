@@ -13,7 +13,7 @@ def read_job_queue():
     """
     jobs = {}
     if config.username =='':
-        out = subprocess.check_output(['echo'])
+        out = subprocess.check_output(['echo'],shell=True)
     else:
         out = subprocess.check_output(['squeue','-u',config.username])
     

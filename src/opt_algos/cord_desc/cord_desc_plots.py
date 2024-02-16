@@ -13,8 +13,11 @@ def plot_fval(run_info,sim_num, scans, model):
 
     """
     
-    if not os.path.exists(config.project_folder+'/opt_plots'):
-        os.mkdir(config.project_folder+'/opt_plots')
+    if not os.path.exists(os.path.join(config.project_folder, 'opt_plots')):
+
+        os.mkdir(os.path.join(config.project_folder, 'opt_plots'))
+
+
     
     print(f"Generating plot for Simulation Number {sim_num}...")
     
@@ -104,6 +107,7 @@ def plot_fval(run_info,sim_num, scans, model):
     plt.xlabel("Simulation No.")
     plt.title(f"Max. value found in Simulation Number  {max_val_ind+1}")
     
-    filename=config.project_folder+'/opt_plots/'+str(sim_num)+'.png'
+    filename = os.path.join(config.project_folder, 'opt_plots', str(sim_num) + '.png')
+    
     fig.savefig(filename, bbox_inches='tight')
     plt.close(fig)
